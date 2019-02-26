@@ -11,18 +11,22 @@ class App extends Component {
     currencyToValueToBase: 0,
     result: ""
   };
-  inputChanged = e => {
-    const value = e.target.value;
-    const name = e.target.name;
+  inputChanged = (e = 0, prval, prname) => {
+    const value = e.target.value || prval;
+    const name = e.target.name || prname;
+
     console.log(name || 0);
-    this.setState({
-      [name]: value
+    this.setState(state => ({
+      [name]: value,
+      result: ""
       // send: true
-    });
+    }));
   };
 
   handleSubmit = e => {
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
     this.setState({
       send: true
     });
@@ -69,6 +73,20 @@ class App extends Component {
         send: false
       });
     }
+    if (this.state.currencyTo === this.state.currencyFrom) {
+      const filteredCurrencies = ["USD", "CHF"].filter(
+        item => item !== this.state.currencyFrom
+      );
+      // const filteredCurrencies = [...currencies].filter(
+      //   item => item !== this.state.currencyFrom
+      // );
+      const random = Math.floor(Math.random() * filteredCurrencies.length);
+      this.setState(state => ({
+        currencyTo: filteredCurrencies[random]
+        // send: true
+      }));
+      // this.inputChanged(0, "USD", 'currencyTo');
+    }
   }
   render() {
     console.log("render");
@@ -91,6 +109,21 @@ class App extends Component {
     const currencyTo = currencyFrom.map(currency => {
       if (currency.props.selected === true) {
         return;
+      } else if (currency === this.state.currencyTo) {
+        return (
+          <option
+            key={this.state.currencyTo}
+            value={this.state.currencyTo}
+            selected
+          >
+            {/* <option
+            key={currency.props.key}
+            value={currency.props.value}
+            selected
+          > */}
+            {currency}
+          </option>
+        );
       } else {
         return (
           <option key={currency.props.key} value={currency.props.value}>
@@ -130,7 +163,7 @@ class App extends Component {
           <button>submit</button>
         </form>
         <h1>
-          {this.state.value !== 0
+          {this.state.value !== 0 && this.state.result !== ""
             ? `${this.state.value} ${this.state.currencyFrom} is worth
           ${this.state.result} ${this.state.currencyTo}`
             : ""}
