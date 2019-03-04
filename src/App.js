@@ -1,44 +1,77 @@
 import React, { Component } from "react";
+import Select from "react-select";
+import styled from "styled-components";
 
-const currencies = ["USD", "CHF", "GBP", "EUR"];
+const options = [
+  { value: "USD", label: "USD" },
+  { value: "CHF", label: "CHF" },
+  { value: "GBP", label: "GBP" },
+  { value: "EUR", label: "EUR" }
+];
 class App extends Component {
   state = {
     value: 0,
     send: false,
-    currencyFrom: "CHF",
-    currencyTo: "USD",
     currencyFromValueToBase: 0,
     currencyToValueToBase: 0,
-    result: ""
+    result: "",
+    selectedOptionFrom: null,
+    selectedOptionTo: null
   };
-  inputChanged = (e = 0, prval, prname) => {
-    const value = e.target.value || prval;
-    const name = e.target.name || prname;
-
+  inputChanged = e => {
+    const value = e.target.value;
+    const name = e.target.name;
     console.log(name || 0);
-    this.setState(state => ({
-      [name]: value,
+    if (value > 0) {
+      this.setState(state => ({
+        [name]: value,
+        result: ""
+        // send: true
+      }));
+    }
+  };
+
+  handleChangeFrom = selectedOptionFrom => {
+    this.setState({
+      selectedOptionFrom,
+      currencyFrom: selectedOptionFrom.value,
       result: ""
       // send: true
-    }));
-  };
-
-  handleSubmit = e => {
-    if (e) {
-      e.preventDefault();
-    }
-    this.setState({
-      send: true
     });
   };
 
+  handleChangeTo = selectedOptionTo => {
+    this.setState({
+      selectedOptionTo,
+      currencyTo: selectedOptionTo.value,
+      result: ""
+      // send: true
+    });
+  };
+
+  handleSubmit = e => {
+    e.preventDefault();
+    if (
+      this.state.selectedOptionFrom &&
+      this.state.selectedOptionTo &&
+      this.state.value !== 0
+    ) {
+      this.setState({
+        send: true
+      });
+    }
+  };
+
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.send) {
+    if (
+      this.state.send &&
+      this.state.selectedOptionTo !== this.state.selectedOptionFrom
+    ) {
       console.log("faetch");
       const data1 = fetch(
         `http://api.nbp.pl/api/exchangerates/rates/a/${
-          this.state.currencyTo
-        }/today`
+          this.state.selectedOptionTo.value
+        }`
       )
         .then(result => result.json())
         .then(result => {
@@ -49,8 +82,8 @@ class App extends Component {
 
       const data2 = fetch(
         `http://api.nbp.pl/api/exchangerates/rates/a/${
-          this.state.currencyFrom
-        }/today`
+          this.state.selectedOptionFrom.value
+        }`
       )
         .then(result => result.json())
         .then(result => {
@@ -73,86 +106,49 @@ class App extends Component {
         send: false
       });
     }
-    if (this.state.currencyTo === this.state.currencyFrom) {
-      const filteredCurrencies = ["USD", "CHF"].filter(
-        item => item !== this.state.currencyFrom
-      );
-      // const filteredCurrencies = [...currencies].filter(
-      //   item => item !== this.state.currencyFrom
-      // );
-      const random = Math.floor(Math.random() * filteredCurrencies.length);
+    if (
+      this.state.selectedOptionTo === this.state.selectedOptionFrom &&
+      this.state.selectedOptionFrom !== null &&
+      this.state.selectedOptionTo !== null
+    ) {
       this.setState(state => ({
-        currencyTo: filteredCurrencies[random]
-        // send: true
+        currencyFromValueToBase: 0,
+        currencyToValueToBase: 0,
+        selectedOptionTo: null,
+        currencyTo: "",
+        result: "",
+        value: 0
       }));
-      // this.inputChanged(0, "USD", 'currencyTo');
     }
   }
   render() {
     console.log("render");
-    const currencyFrom = currencies.map(currency => {
-      if (currency === this.state.currencyFrom) {
-        return (
-          <option key={currency} value={currency} selected>
-            {currency}
-          </option>
-        );
-      } else {
-        return (
-          <option key={currency} value={currency}>
-            {currency}
-          </option>
-        );
-      }
-    });
-
-    const currencyTo = currencyFrom.map(currency => {
-      if (currency.props.selected === true) {
-        return;
-      } else if (currency === this.state.currencyTo) {
-        return (
-          <option
-            key={this.state.currencyTo}
-            value={this.state.currencyTo}
-            selected
-          >
-            {/* <option
-            key={currency.props.key}
-            value={currency.props.value}
-            selected
-          > */}
-            {currency}
-          </option>
-        );
-      } else {
-        return (
-          <option key={currency.props.key} value={currency.props.value}>
-            {currency.props.value}
-          </option>
-        );
-      }
-    });
+    const optionFrom = [...options];
+    let optionTo = [...options];
+    if (this.state.selectedOptionFrom !== null) {
+      optionTo = [...options].filter(
+        item => item.value !== this.state.selectedOptionFrom.value
+      );
+    }
     return (
       <div className="App">
         <form onSubmit={this.handleSubmit}>
-          <label htmlFor="currencyFrom">Choose currency from you convert</label>
-          <select
+          <Select
+            value={this.state.selectedOptionFrom}
+            onChange={this.handleChangeFrom}
+            options={optionFrom}
             name="currencyFrom"
             id="currencyFrom"
-            onChange={this.inputChanged}
-          >
-            {currencyFrom}
-          </select>
-          <label htmlFor="currencyTo">to this</label>
-          <select
-            name="currencyTo"
-            id="currencyTo"
-            onChange={this.inputChanged}
-          >
-            {currencyTo}
-          </select>
-
-          <label htmlFor="amount">Set amount</label>
+            placeholder="choose currency from you convert"
+          />
+          <Select
+            value={this.state.selectedOptionTo}
+            onChange={this.handleChangeTo}
+            options={optionTo}
+            name="currencyFrom"
+            id="currencyFrom"
+            placeholder="to currency you wan't to know"
+          />
           <input
             type="number"
             id="amount"
@@ -174,3 +170,18 @@ class App extends Component {
 }
 
 export default App;
+
+//TODO
+
+// no submit only changes 3
+// TODO dont fetch data after only changin input //numeric  4
+// to styled components  2
+//negative input  1 DONE
+// show warning if something is missing number or curency to compare
+//show loading
+
+//ISSUES
+
+//crash after no selects selected and changing input // infinite renedering SOLVED
+
+//long time fetchsomeitmes Dont know why
