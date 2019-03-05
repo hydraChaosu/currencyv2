@@ -1,6 +1,16 @@
 import React, { Component } from "react";
 import Select from "react-select";
-import styled from "styled-components";
+import "./styles.scss";
+import styled, { css } from "styled-components";
+
+// const Select = styled.select`
+//   background: transparent;
+//   border-radius: 3px;
+//   border: 2px solid palevioletred;
+//   color: palevioletred;
+//   margin: 0 1em;
+//   padding: 0.25em 1em;
+// `;
 
 const options = [
   { value: "USD", label: "USD" },
@@ -175,13 +185,15 @@ export default App;
 
 // no submit only changes 3
 // TODO dont fetch data after only changin input //numeric  4
-// to styled components  2
+// to styled components  2 Importing component make it unusable SKIP
 //negative input  1 DONE
-// show warning if something is missing number or curency to compare
-//show loading
+// +show warning if something is missing number or curency to compare
+// +show loading
 
 //ISSUES
 
 //crash after no selects selected and changing input // infinite renedering SOLVED
 
 //long time fetchsomeitmes Dont know why
+//cant correctyl write input SOLVED
+// 0(smenumberbug)
