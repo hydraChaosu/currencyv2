@@ -5,14 +5,60 @@
 }
 
 .App {
+  display: flex;
+  flex-direction: column;
   height: 100vh;
+  padding: 10vh 5vw;
   background-color: #ff7400;
 }
 
-button {
-  padding: 10px 20px;
+.select {
+  margin-bottom: 20px;
+  // border: 5px solid;
+  // border-color: #b00000;
+  // background-color: #ff7400;
+}
+
+.input {
+  height: 38px;
+  width: 100%;
+  padding: 2px 8px;
+  margin-bottom: 20px;
   color: #b00000;
   background-color: #ff953d;
   border: 5px solid;
   border-color: #b00000;
+  border-radius: 4px;
+}
+
+.input:focus {
+  color: hsl(0, 0, 0);
+}
+
+button {
+  display: block;
+  width: 100%;
+  padding: 5px 8px;
+  margin-bottom: 20px;
+  color: #b00000;
+  background-color: #ff953d;
+  border: 5px solid;
+  border-color: #b00000;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.result {
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+}
+
+p {
+  color: #b00000;
+  font-size: 24px;
+  font-weight: bold;
 }

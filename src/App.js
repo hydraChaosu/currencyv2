@@ -32,7 +32,7 @@ class App extends Component {
     const value = e.target.value;
     const name = e.target.name;
     console.log(name || 0);
-    if (value > 0) {
+    if (value >= 0) {
       this.setState(state => ({
         [name]: value,
         result: ""
@@ -144,6 +144,7 @@ class App extends Component {
       <div className="App">
         <form onSubmit={this.handleSubmit}>
           <Select
+            className="select"
             value={this.state.selectedOptionFrom}
             onChange={this.handleChangeFrom}
             options={optionFrom}
@@ -152,6 +153,7 @@ class App extends Component {
             placeholder="choose currency from you convert"
           />
           <Select
+            className="select"
             value={this.state.selectedOptionTo}
             onChange={this.handleChangeTo}
             options={optionTo}
@@ -160,6 +162,7 @@ class App extends Component {
             placeholder="to currency you wan't to know"
           />
           <input
+            className="input"
             type="number"
             id="amount"
             name="value"
@@ -168,12 +171,14 @@ class App extends Component {
           />
           <button>submit</button>
         </form>
-        <h1>
-          {this.state.value !== 0 && this.state.result !== ""
-            ? `${this.state.value} ${this.state.currencyFrom} is worth
+        <div className="result">
+          <p>
+            {this.state.value !== 0 && this.state.result !== ""
+              ? `${this.state.value} ${this.state.currencyFrom} is worth
           ${this.state.result} ${this.state.currencyTo}`
-            : ""}
-        </h1>
+              : ""}
+          </p>
+        </div>
       </div>
     );
   }
