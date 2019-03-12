@@ -34,8 +34,8 @@ class App extends Component {
     console.log(name || 0);
     if (value >= 0) {
       this.setState(state => ({
-        [name]: value,
-        result: ""
+        [name]: value
+        // result: ""
         // send: true
       }));
     }
@@ -73,6 +73,24 @@ class App extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
+    if (
+      this.state.selectedOptionTo === prevState.selectedOptionTo &&
+      this.state.selectedOptionFrom === prevState.selectedOptionFrom &&
+      this.state.value !== prevState.value &&
+      this.state.result >= 0 &&
+      this.state.result !== ""
+    ) {
+      console.log("samo");
+      let result;
+      result = (
+        (this.state.value * this.state.currencyFromValueToBase) /
+        this.state.currencyToValueToBase
+      ).toPrecision(4);
+      this.setState({
+        result
+      });
+    }
+
     if (
       this.state.send &&
       this.state.selectedOptionTo !== this.state.selectedOptionFrom
@@ -173,7 +191,7 @@ class App extends Component {
         </form>
         <div className="result">
           <p>
-            {this.state.value !== 0 && this.state.result !== ""
+            {this.state.value > 0 && this.state.result > 0
               ? `${this.state.value} ${this.state.currencyFrom} is worth
           ${this.state.result} ${this.state.currencyTo}`
               : ""}
@@ -189,7 +207,7 @@ export default App;
 //TODO
 
 // no submit only changes 3
-// TODO dont fetch data after only changin input //numeric  4
+// TODO dont fetch data after only changin input //numeric  4 Finished but theres a bug
 // to styled components  2 Importing component make it unusable SKIP
 //negative input  1 DONE
 // +show warning if something is missing number or curency to compare
