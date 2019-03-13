@@ -26,7 +26,53 @@ class App extends Component {
     currencyToValueToBase: 0,
     result: "",
     selectedOptionFrom: null,
-    selectedOptionTo: null
+    selectedOptionTo: null,
+    error: {
+      valueFrom: false,
+      valueTo: false,
+      valueInput: false,
+      valueGreaterThen0: false
+    }
+  };
+
+  errors = {
+    valueFromIncorrect: "Wybierz walutę z której chcesz sprawdzić wartość.",
+    valueToIncorrect: "Wybierz walutę do której chcesz sprawdzić wartość.",
+    valueIncorrect: "Wybierz ilość waluty. ",
+    valueGreater: "Wartość musi być większa niż 0."
+  };
+
+  validation = () => {
+    let valueFrom = false;
+    let valueTo = false;
+    let valueInput = false;
+    let valueGreater = false;
+    let correct = false;
+
+    if (this.state.selectedOptionFrom) {
+      valueFrom = true;
+    }
+
+    if (this.state.selectedOptionTo) {
+      valueTo = true;
+    }
+
+    if (this.state.value) {
+      valueInput = true;
+    }
+    if (this.state.value > 0) {
+      valueGreater = true;
+    }
+    if (valueFrom && valueInput && valueTo && valueGreater) {
+      correct = true;
+    }
+    return {
+      valueFrom,
+      valueTo,
+      valueInput,
+      valueGreater,
+      correct
+    };
   };
   inputChanged = e => {
     const value = e.target.value;
@@ -61,15 +107,39 @@ class App extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    if (
-      this.state.selectedOptionFrom &&
-      this.state.selectedOptionTo &&
-      this.state.value !== 0
-    ) {
+    const validation = this.validation();
+    console.log(validation);
+
+    if (validation.correct) {
       this.setState({
-        send: true
+        send: true,
+        error: {
+          valueFrom: false,
+          valueTo: false,
+          valueInput: false,
+          valueGreaterThen0: false
+        }
+      });
+    } else {
+      this.setState({
+        error: {
+          valueFrom: !validation.valueFrom,
+          valueTo: !validation.valueTo,
+          valueInput: !validation.valueInput,
+          valueGreaterThen0: !validation.valueGreater
+        }
       });
     }
+    // old
+    // if (
+    //   this.state.selectedOptionFrom &&
+    //   this.state.selectedOptionTo &&
+    //   this.state.value !== 0
+    // ) {
+    //   this.setState({
+    //     send: true
+    //   });
+    // }
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -161,6 +231,10 @@ class App extends Component {
     return (
       <div className="App">
         <form onSubmit={this.handleSubmit}>
+          <span>
+            {this.state.error.valueFrom && this.errors.valueFromIncorrect}
+          </span>
+
           <Select
             className="select"
             value={this.state.selectedOptionFrom}
@@ -170,6 +244,9 @@ class App extends Component {
             id="currencyFrom"
             placeholder="choose currency from you convert"
           />
+          <span>
+            {this.state.error.valueTo && this.errors.valueToIncorrect}
+          </span>
           <Select
             className="select"
             value={this.state.selectedOptionTo}
@@ -179,6 +256,11 @@ class App extends Component {
             id="currencyFrom"
             placeholder="to currency you wan't to know"
           />
+          <span>
+            {this.state.error.valueInput && this.errors.valueIncorrect}
+            {this.state.error.valueGreaterThen0 && this.errors.valueGreater}
+          </span>
+
           <input
             className="input"
             type="number"
@@ -207,10 +289,10 @@ export default App;
 //TODO
 
 // no submit only changes 3
-// TODO dont fetch data after only changin input //numeric  4 Finished but theres a bug
+// TODO dont fetch data after only changin input //numeric  4 Finished b
 // to styled components  2 Importing component make it unusable SKIP
 //negative input  1 DONE
-// +show warning if something is missing number or curency to compare
+// +show warning if something is missing number or curency to compare Finished
 // +show loading
 
 //ISSUES
