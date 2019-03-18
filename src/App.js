@@ -285,20 +285,3 @@ class App extends Component {
 }
 
 export default App;
-
-//TODO
-
-// no submit only changes 3
-// TODO dont fetch data after only changin input //numeric  4 Finished b
-// to styled components  2 Importing component make it unusable SKIP
-//negative input  1 DONE
-// +show warning if something is missing number or curency to compare Finished
-// +show loading
-
-//ISSUES
-
-//crash after no selects selected and changing input // infinite renedering SOLVED
-
-//long time fetchsomeitmes Dont know why
-//cant correctyl write input SOLVED
-// 0(smenumberbug)
